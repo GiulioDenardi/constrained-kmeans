@@ -24,9 +24,11 @@ For a complete look at the article used as base of this implementation, check [h
 
 ### Implementation
 
-The implementation of the algorithm is at the _constrainedKMeans.py_ file. It contains the #clusterize public function and the private #violateConstraints private function.
+The implementation of the algorithm is at the _constrainedKMeans.py_ file. It contains the #clusterize public function and the private #violateConstraints "private" function.
 
 For the tests, we used the _testCluster.py_ file, that contains some basic tests and a presentation of this implementation. So, if you want to easily check the algorithm, just open this file!
+
+For productivity purposes, here is a simple [Python cheat sheet](http://www.cogsci.rpi.edu/~destem/igd/python_cheat_sheet.pdf) for checking basic python commands.
 
 
 ### Authors
