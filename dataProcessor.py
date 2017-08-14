@@ -26,7 +26,7 @@ class Processor:
 	def get_data(self):
     		return self.data
 
-	# # Only for classification or clustering comparation
+	# # Only for classification or clustering comparison
 	# def get_structured_data(self):
 	# 	return StructuredData(self.data[:, :self.attr_count - 1], self.data[:, self.attr_count - 1])
 

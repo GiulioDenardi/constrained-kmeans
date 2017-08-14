@@ -98,18 +98,18 @@ class ConstrainedKMeans:
 
 
 class DistanceMetrics:
-    
+
     def EuclidianDistance(self, X, Y):
         tuples = zip(X, Y)
         distance = 0
         for x, y in tuples:
-            distance += x ** 2 + y ** 2
+            distance += (x ** 2 - y ** 2)
         return math.sqrt(distance)
 
     def SimpleMatchDistance(self, X, Y):
         tuples = zip(X, Y)
         distance = 0
         for x, y in tuples:
-            if(x!=y):
-                distance+=1
+            if(x != y):
+                distance += 1
         return distance
