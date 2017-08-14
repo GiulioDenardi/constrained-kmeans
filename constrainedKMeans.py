@@ -1,24 +1,29 @@
 import random as rand;
+from sets import Set;
 
 ## mlCons / dlCons structure: [(instance, instance), ... (instance, instance)]
 ## instance / point structure: Set(attr1, attr2...)
 class ConstrainedKMeans:
-	def __init__(self, clustersQty):
+	def __init__(self, clustersQty, convergeThreshold, distFunction):
 		self.clustersQty = clustersQty;
+		self.convergeThreshold = convergeThreshold;
+		self.distFunction = distFunction;
 
 	#This functiion trains with the dataset.
 	def clusterize(self, dataset, mlCons, dlCons):
 		print('clusterizing with ', initClusters.length, " clusters...");
-		self.clusters = [[rand.random() for x in range(len(dataset[0]))]]*clustersQty ### check dataset length / init clusters
+		self.clusters = {k : [rand.random() for x in range(len(dataset[0]))] for k in range self.clustersQty} ### TODO check dataset length / init clusters
+		self.clusterPoints = {k : [] for k in self.clusters.keys};
 
 		__preprocessDataset(dataset);
 
 		while (not __converged()):
-			clusterPoints = __assignPoints(dataset, mlCons, dlCons);
+			self.clusterPoints = {k : [] for k in self.clusters.keys}
+			__assignPoints(dataset, mlCons, dlCons);
 			self.oldClusters = self.clusters;
-			self.clusters = __updateClusters(clusterPoints);
+			self.clusters = __updateClusters(self.clusterPoints);
 
-		return self.clusters;
+		return self.clusterPoints;
 
 	#This function preprocess the dataset.
 	#It should put values in [0,1] and transform symbolic data into numerical data.
@@ -27,20 +32,47 @@ class ConstrainedKMeans:
 
 	#This function shall check if the function has stop converging (we should limit a threshold)
 	def __converged(self):
-    		return false
+		if (self.oldClusters != None):
+    			for i in self.oldClusters.length:
+				for attr in self.oldClusters[i].length:
+					if (self.oldClusters[i][attr] - self.clusters[i][attr] > self.convergeThreshold):
+						return false;
+
+		return true;
 
 	#This function shall assign the points to the clusters according to its distance from the clusters.
 	def __assignPoints(self, dataset, mlCons, dlCons):
-    		return None
+		for point in dataset:
+			##TODO check if should insert the points with constraints first.
+			cluster = __findNearestCluster(point);
+			if (not __violateConstraints(point, cluster, mlCons, dlCons)):
+				self.clusterPoints[cluster].append(point);
+
+	def __findNearestCluster(self, point):
+		choosenCluster = None;
+		choosenDist = None;
+		for c in self.clusters:
+			if (choosenCluster == None):
+				choosenCluster = c;
+				choosenDist = self.distFunction.getDist(point);
+			elif (self.distFunction.getDist(point) < choosenDist):
+				choosenCluster = c;
+				choosenDist = self.distFunction.getDist(point);
+
+		return choosenCluster;
+
 
 	#This function shall move the clusters according to its points' positions.
 	def __updateClusters(self, clusterPoints):
-    		return None
+		for cp in self.clusterPoints:
+			for attr in self.clusters[cp]:
+				self.clusters[cp][attr] = sum(x[attr] for x in self.clusterPoints[cp])/len(self.clusterPoints[cp]);
+
 
 	#This function is the article's violate-contraint function.
 	def __violateConstraints(self, point, cluster, mlCons, dlCons):
 		print('checking constraints...');
-		mustLink = [x for x in mlCons if point in x];
+		mustLink = [x for x in mlCons if (point == x or point[::-1] == x)];
 
 		if (mustLink.length > 0):
 			for ml in mustLink:
@@ -51,7 +83,7 @@ class ConstrainedKMeans:
 					if (ml[0] not in cluster):
 						return true;
 
-		dontLink = [x for x in dlCons if point in x];
+		dontLink = [x for x in dlCons if (point == x or point[::-1] == x)];
 
 		if (dontLink.length > 0):
 			for dl in dontLink:
@@ -63,8 +95,3 @@ class ConstrainedKMeans:
 						return true;
 
 		return false;
-
-	#This function calculates the hamming distance.
-	def __hammingDist(a, b):
-		return abs(ord(a) - ord(b));
-
