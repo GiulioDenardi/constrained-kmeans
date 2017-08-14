@@ -23,16 +23,19 @@ class ConstrainedKMeans:
 	#This function preprocess the dataset.
 	#It should put values in [0,1] and transform symbolic data into numerical data.
 	def __preprocessDataset(self, dataset):
+    		return None
 
-	#This function shall check if the function has stop converging (we should limit a threshold) 
+	#This function shall check if the function has stop converging (we should limit a threshold)
 	def __converged(self):
-		return false;
+    		return false
 
 	#This function shall assign the points to the clusters according to its distance from the clusters.
 	def __assignPoints(self, dataset, mlCons, dlCons):
+    		return None
 
 	#This function shall move the clusters according to its points' positions.
 	def __updateClusters(self, clusterPoints):
+    		return None
 
 	#This function is the article's violate-contraint function.
 	def __violateConstraints(self, point, cluster, mlCons, dlCons):
@@ -64,3 +67,4 @@ class ConstrainedKMeans:
 	#This function calculates the hamming distance.
 	def __hammingDist(a, b):
 		return abs(ord(a) - ord(b));
+
