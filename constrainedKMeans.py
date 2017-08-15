@@ -16,11 +16,11 @@ class ConstrainedKMeans:
 		self.clusters = {k : rand.choice(dataset) for k in range(self.clustersQty)}
 		self.clusterPoints = {k : [] for k in self.clusters.keys()};
 
-		while (not __converged()):
+		while (not self.__converged()):
 			self.clusterPoints = {k : [] for k in self.clusters.keys()}
-			__assignPoints(dataset, mlCons, dlCons);
+			self.__assignPoints(dataset, mlCons, dlCons);
 			self.oldClusters = self.clusters;
-			self.clusters = __updateClusters(self.clusterPoints);
+			self.clusters = self.__updateClusters(self.clusterPoints);
 
 		return self.clusterPoints;
 
