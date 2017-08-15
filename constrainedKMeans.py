@@ -6,6 +6,7 @@ import math;
 from sets import Set;
 import copy;
 import numpy as np;
+import itertools;
 
 ## mlCons / dlCons structure: [(instance, instance), ... (instance, instance)]
 ## instance / point structure: Set(attr1, attr2...)
@@ -77,14 +78,13 @@ class ConstrainedKMeans:
         if (np.unique(dataset).size < self.clustersQty):
             raise ValueError('O número de instâncias únicas do dataset deve ser maior ou igual o número de grupos.');
 
-        cls = {};
-        for i in range(0, self.clustersQty):
-            candidate = rand.choice(range(0, len(dataset)));
+        keepChoosingPoints = True;
+        while (keepChoosingPoints):
+            cls = {k : rand.choice(dataset) for k in range(self.clustersQty)};
+            aux = set([tuple(cl) for cl in cls.values()]);
 
-            if (len(cls.values()) > 0):
-                print('TODO check if the value exists in the cls.values.')
-
-            cls[i] = dataset[candidate];
+            if (self.clustersQty == len(aux)):
+                keepChoosingPoints = False;
 
         return cls;
 
