@@ -19,6 +19,7 @@ class ConstrainedKMeans:
     #This functiion trains with the dataset.
     def clusterize(self, dataset, mlCons, dlCons):
         print('clusterizing with ', self.clustersQty, " clusters...");
+
         self.clusters = self.__getInitialClusters(dataset.copy());
         self.oldClusters = None;
         
@@ -90,22 +91,22 @@ class ConstrainedKMeans:
 
     #This function is the article's violate-contraint function.
     def __violateConstraints(self, point, cluster, mlCons, dlCons):
-        mustLink = [x for x in mlCons if (point == x or point[::-1] == x)];
+        mustLink = [x for x in mlCons if (any((point == y).all() for y in x))];
 
         if (len(mustLink) > 0):
             for ml in mustLink:
-                if (ml[0] == point):
+                if ((point == ml[0]).all()):
                     pairCluster = self.__findNearestCluster(ml[1]);
                 else:
                     pairCluster = self.__findNearestCluster(ml[0]);
                 if (pairCluster != cluster):
                     return True;
 
-        dontLink = [x for x in dlCons if (point == x or point[::-1] == x)];
+        dontLink = [x for x in dlCons if (any((point == y).all() for y in x))];
 
         if (len(dontLink) > 0):
             for dl in dontLink:
-                if (dl[0] == point):
+                if ((point == dl[0]).all()):
                     pairCluster = self.__findNearestCluster(dl[1]);
                 else:
                     pairCluster = self.__findNearestCluster(dl[0]);
