@@ -15,7 +15,8 @@ class ConstrainedKMeans:
 		print('clusterizing with ', self.clustersQty, " clusters...");
 		self.clusters = {k : rand.choice(dataset) for k in range(self.clustersQty)}
 		self.clusterPoints = {k : [] for k in self.clusters.keys()};
-
+		self.oldClusters = self.clusters; # TODO: Remove this line
+		
 		while (not self.__converged()):
 			self.clusterPoints = {k : [] for k in self.clusters.keys()}
 			self.__assignPoints(dataset, mlCons, dlCons);
@@ -32,19 +33,19 @@ class ConstrainedKMeans:
 	#This function shall check if the function has stop converging (we should limit a threshold)
 	def __converged(self):
 		if (self.oldClusters != None):
-    			for i in self.oldClusters.length:
-				for attr in self.oldClusters[i].length:
-					if (self.oldClusters[i][attr] - self.clusters[i][attr] > self.convergeThreshold):
-						return false;
+    			for i in self.oldClusters.items:
+					for attr in self.oldClusters[i].length:
+						if (self.oldClusters[i][attr] - self.clusters[i][attr] > self.convergeThreshold):
+							return False;
 
-		return true;
+		return True;
 
 	#This function shall assign the points to the clusters according to its distance from the clusters.
 	def __assignPoints(self, dataset, mlCons, dlCons):
 		for point in dataset:
 			##TODO check if should insert the points with constraints first.
-			cluster = __findNearestCluster(point);
-			if (not __violateConstraints(point, cluster, mlCons, dlCons)):
+			cluster = self.__findNearestCluster(point);
+			if (not self.__violateConstraints(point, cluster, mlCons, dlCons)):
 				self.clusterPoints[cluster].append(point);
 
 	def __findNearestCluster(self, point):
@@ -77,10 +78,10 @@ class ConstrainedKMeans:
 			for ml in mustLink:
 				if (ml[0] == point):
 					if (ml[1] not in cluster):
-						return true;
+						return True;
 				else:
 					if (ml[0] not in cluster):
-						return true;
+						return True;
 
 		dontLink = [x for x in dlCons if (point == x or point[::-1] == x)];
 
@@ -88,12 +89,12 @@ class ConstrainedKMeans:
 			for dl in dontLink:
 				if (dl[0] == point):
 					if (ml[1] in cluster):
-						return true;
+						return True;
 				else:
 					if (ml[0] in cluster):
-						return true;
+						return True;
 
-		return false;
+		return False;
 
 
 class DistanceMetrics:
