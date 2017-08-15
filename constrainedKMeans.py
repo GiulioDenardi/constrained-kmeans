@@ -1,4 +1,5 @@
 import random as rand;
+import math
 from sets import Set;
 
 ## mlCons / dlCons structure: [(instance, instance), ... (instance, instance)]
@@ -11,14 +12,12 @@ class ConstrainedKMeans:
 
 	#This functiion trains with the dataset.
 	def clusterize(self, dataset, mlCons, dlCons):
-		print('clusterizing with ', initClusters.length, " clusters...");
-		self.clusters = {k : [rand.random() for x in range(len(dataset[0]))] for k in range self.clustersQty} ### TODO check dataset length / init clusters
-		self.clusterPoints = {k : [] for k in self.clusters.keys};
-
-		__preprocessDataset(dataset);
+		print('clusterizing with ', self.clustersQty, " clusters...");
+		self.clusters = {k : rand.choice(dataset) for k in range(self.clustersQty)}
+		self.clusterPoints = {k : [] for k in self.clusters.keys()};
 
 		while (not __converged()):
-			self.clusterPoints = {k : [] for k in self.clusters.keys}
+			self.clusterPoints = {k : [] for k in self.clusters.keys()}
 			__assignPoints(dataset, mlCons, dlCons);
 			self.oldClusters = self.clusters;
 			self.clusters = __updateClusters(self.clusterPoints);
