@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+from __future__ import print_function
 
 import random as rand;
 import math;
@@ -29,8 +30,8 @@ class ConstrainedKMeans:
             self.oldClusters = copy.deepcopy(self.clusters);
             self.__updateClusters();
 
-        print('Cluster x Points: ', self.clusterPoints);
-        print('Clusters: ', self.clusters);
+        # print('Cluster x Points: ', self.clusterPoints);
+        # print('Clusters: ', self.clusters);
         return self.clusterPoints;
 
     #This function shall check if the function has stop converging (we should limit a threshold)
@@ -134,3 +135,18 @@ class DistanceMetrics:
                 if(x != y):
                     distance += 1
             return distance
+
+class ReportResults:
+    
+    def __print_index(self, source, item_to_search):
+        list_items = list(source)
+        for i, item in enumerate(list_items):
+            if((item==item_to_search).all()):
+                print(i, end=' ')
+
+    def print_clusters(self, dataset, results):
+        for i in range(len(results)):
+            cluster = results[i]
+            print("\nCluster " + str(i) + "(" + str(len(cluster)) + " items):")
+            for item in cluster:
+                self.__print_index(dataset, item)
