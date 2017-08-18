@@ -25,7 +25,8 @@ class ConstrainedKMeans:
         self.oldClusters = None;
         
         while (not self.__converged()):
-            self.clusterPoints = {k : [] for k in self.clusters.keys()}
+            self.clusterPoints = {k : [] for k in self.clusters.keys()};
+            self.noCluster = [];
             self.__assignPoints(dataset, mlCons, dlCons);
             self.oldClusters = copy.deepcopy(self.clusters);
             self.__updateClusters();
@@ -53,6 +54,8 @@ class ConstrainedKMeans:
             cluster = self.__findNearestCluster(point);
             if (not self.__violateConstraints(point, cluster, mlCons, dlCons)):
                 self.clusterPoints[cluster].append(point);
+            else:
+                self.noCluster.append(point);
 
     def __findNearestCluster(self, point):
         choosenCluster = None;
@@ -111,7 +114,7 @@ class ConstrainedKMeans:
                     pairCluster = self.__findNearestCluster(dl[1]);
                 else:
                     pairCluster = self.__findNearestCluster(dl[0]);
-                if (pairCluster != cluster):
+                if (pairCluster == cluster):
                     return True;
 
         return False;

@@ -28,10 +28,11 @@ must_link = [
 	[dataset[2], dataset[28]],
 ]
 cannot_link = [
-	dataset[10], dataset[11]
+	[dataset[10], dataset[11]]
 ]
 results = constrained_kmeans.clusterize(dataset, must_link, cannot_link)
 
 # Results report
 report = ReportResults()
 report.print_clusters(dataset, results)
+print '\n';
