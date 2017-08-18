@@ -26,7 +26,7 @@ class ConstrainedKMeans:
         
         while (not self.__converged()):
             self.clusterPoints = {k : [] for k in self.clusters.keys()};
-            self.noCluster = [];
+            self.noClusters = [];
             self.__assignPoints(dataset, mlCons, dlCons);
             self.oldClusters = copy.deepcopy(self.clusters);
             self.__updateClusters();
@@ -50,25 +50,30 @@ class ConstrainedKMeans:
     #This function shall assign the points to the clusters according to its distance from the clusters.
     def __assignPoints(self, dataset, mlCons, dlCons):
         for point in dataset:
-            ##TODO check if should insert the points with constraints first.
-            cluster = self.__findNearestCluster(point);
-            if (not self.__violateConstraints(point, cluster, mlCons, dlCons)):
-                self.clusterPoints[cluster].append(point);
-            else:
-                self.noCluster.append(point);
+            
+            putInCluster = False;
+            for cd in self.__findNearestClusters(point):
+                if (not self.__violateConstraints(point, cd[0], mlCons, dlCons)):
+                    self.clusterPoints[cd[0]].append(point);
+                    putInCluster = True;
+                    break;
 
-    def __findNearestCluster(self, point):
-        choosenCluster = None;
-        choosenDist = None;
+            if (not putInCluster):
+                self.noClusters.append(point);
+
+    def __findNearestClusters(self, point):
+        clusterDists = {}
         for c in self.clusters.items():
-            if (choosenCluster == None):
-                choosenCluster = c[0];
-                choosenDist = self.distFunction.getDist(point, c[1]);
-            elif (self.distFunction.getDist(point, c[1]) < choosenDist):
-                choosenCluster = c[0];
-                choosenDist = self.distFunction.getDist(point, c[1]);
+            clusterDists[c[0]] = self.distFunction.getDist(point, c[1]);
 
-        return choosenCluster;
+        return sorted(clusterDists.items(), key=lambda x: x[1]);
+
+    def __findNearestCluster(self, point): 
+        clusterDists = {}
+        for c in self.clusters.items():
+            clusterDists[c[0]] = self.distFunction.getDist(point, c[1]);
+
+        return sorted(clusterDists.items(), key=lambda x: x[1])[0][0];
 
 
     #This function shall move the clusters according to its points' positions.
