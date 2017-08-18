@@ -153,3 +153,56 @@ class ReportResults:
             print("\nCluster " + str(i) + "(" + str(len(cluster)) + " items):")
             for item in cluster:
                 self.__print_index(dataset, item)
+        print("\n")
+
+    def __item_in_cluster(self, results, constraint_pair):
+        for i in range(len(results)):
+            cluster = list(results[i])
+            res = 0
+            for i, item in enumerate(cluster):
+                if((item==constraint_pair[0]).all() or (item==constraint_pair[1]).all()):
+                    res+=1
+            if(res==2):
+                return True
+        return False
+
+    def __compute_evaluation_must_link(self, n_ml, a):
+        return a/float(n_ml)
+
+    def __compute_evaluation_cannot_link(self, n_cl, b):
+        return b/float(n_cl)
+
+    def __compute_evaluation_ordinary(self, n, a, b):
+        return (a + b)/float(n)
+
+    def __compute_evaluation_overall(self, n, a, b):
+        return ((a + b)/((n*(float(n)-1))/2))
+
+    def print_evaluation(self, dataset, results, must_link, cannot_link):
+        n_ml = len(must_link)
+        n_cl = len(cannot_link)
+        n = n_ml + n_cl
+        
+        a=0
+        for i in range(len(must_link)):
+            constraint = must_link[i]
+            if(self.__item_in_cluster(results,constraint)):
+                a+=1
+        b=0
+        for i in range(len(cannot_link)):
+            constraint = cannot_link[i]
+            if(not self.__item_in_cluster(results,constraint)):
+                b+=1
+        
+        evaluation_must_link = self.__compute_evaluation_must_link(n_ml, a)
+        evaluation_cannot_link = self.__compute_evaluation_cannot_link(n_cl, b)
+        evaluation_ordinary = self.__compute_evaluation_ordinary(n, a, b)
+        evaluation_overall = self.__compute_evaluation_overall(n, a, b)
+
+        print("n=" + str(n))
+        print("a=" + str(a))
+        print("b=" + str(b))
+        print("evaluation_must_link=" + str(evaluation_must_link))
+        print("evaluation_cannot_link=" + str(evaluation_cannot_link))
+        print("evaluation_ordinary=" + str(evaluation_ordinary))
+        print("evaluation_overall=" + str(evaluation_overall))
